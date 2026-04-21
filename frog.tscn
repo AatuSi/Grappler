@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://bjl4ty66lknx6"]
+
+[ext_resource type="Script" uid="uid://ejqxgxfm3bws" path="res://frog.gd" id="1_6ekd3"]
+[ext_resource type="Texture2D" uid="uid://cgvnikvxbna14" path="res://Resources/lookuphappy.jpg" id="1_whe2r"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6ekd3"]
+atlas = ExtResource("1_whe2r")
+region = Rect2(0, 0, 438, 325)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_slgur"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6ekd3")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_whe2r"]
+size = Vector2(44, 32)
+
+[node name="Frog" type="Node2D" unique_id=1082994909]
+
+[node name="RigidBody2D" type="CharacterBody2D" parent="." unique_id=1542352178]
+script = ExtResource("1_6ekd3")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="RigidBody2D" unique_id=620322867]
+scale = Vector2(0.1, 0.1)
+sprite_frames = SubResource("SpriteFrames_slgur")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D" unique_id=297947640]
+shape = SubResource("RectangleShape2D_whe2r")
+
+[node name="JumpTimer" type="Timer" parent="RigidBody2D" unique_id=2141195796]
+autostart = true
+
+[connection signal="timeout" from="RigidBody2D/JumpTimer" to="." method="_on_jump_timer_timeout"]

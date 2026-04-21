@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://bh2wd04sna4j6" path="res://Player.tscn" id="1_pq8q7"]
 [ext_resource type="Texture2D" uid="uid://bdptgtai7fmfe" path="res://Resources/GrassTileMap.png" id="2_pyidc"]
+[ext_resource type="PackedScene" uid="uid://bjl4ty66lknx6" path="res://frog.tscn" id="3_vvh5c"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vvh5c"]
 texture = ExtResource("2_pyidc")
@@ -66,3 +67,6 @@ tile_set = SubResource("TileSet_28aoi")
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1882434380]
 position = Vector2(126, 0)
 zoom = Vector2(3, 3)
+
+[node name="Frog" parent="." unique_id=1082994909 instance=ExtResource("3_vvh5c")]
+position = Vector2(219, -7)
