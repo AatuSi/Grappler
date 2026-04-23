@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://c8pahc8v7txyn" path="res://Resources/PlayerIdle.png" id="1_xhfnw"]
 [ext_resource type="Texture2D" uid="uid://bu4xtih6hdkrp" path="res://Resources/PlayerJump.png" id="3_cxr5p"]
 [ext_resource type="Texture2D" uid="uid://cxb34sytjpw6f" path="res://Resources/PlayerWalk.png" id="4_tdg3f"]
+[ext_resource type="Texture2D" uid="uid://d1klpwqgdu6dd" path="res://Resources/PlayerLanding.png" id="5_5ncpa"]
 [ext_resource type="Texture2D" uid="uid://c1sosrofcmu0k" path="res://Resources/PlayerSwordSwing1.png" id="5_tdg3f"]
 [ext_resource type="Texture2D" uid="uid://b6lpd28ikgehf" path="res://Resources/PlayerSwordSwing2.png" id="6_dtqjt"]
 
@@ -96,6 +97,9 @@ tracks/1/keys = {
 "values": [0]
 }
 
+[sub_resource type="Animation" id="Animation_l6ohk"]
+resource_name = "Landing"
+
 [sub_resource type="Animation" id="Animation_hp6x6"]
 length = 0.001
 tracks/0/type = "value"
@@ -156,6 +160,7 @@ _data = {
 &"Fall": SubResource("Animation_5ncpa"),
 &"Idle": SubResource("Animation_kpjcp"),
 &"Jump": SubResource("Animation_wi0c6"),
+&"Landing": SubResource("Animation_l6ohk"),
 &"RESET": SubResource("Animation_hp6x6"),
 &"Walk": SubResource("Animation_3tkgg")
 }
@@ -175,6 +180,10 @@ region = Rect2(32, 0, 32, 48)
 [sub_resource type="AtlasTexture" id="AtlasTexture_oudfo"]
 atlas = ExtResource("3_cxr5p")
 region = Rect2(0, 0, 32, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2n1s8"]
+atlas = ExtResource("5_5ncpa")
+region = Rect2(0, 0, 48, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_d6rpx"]
 atlas = ExtResource("4_tdg3f")
@@ -223,6 +232,14 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_2n1s8")
+}],
+"loop": true,
+"name": &"Landing",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_d6rpx")
 }, {
 "duration": 1.0,
@@ -264,6 +281,8 @@ nodes/output/position = Vector2(740, 120)
 nodes/Animation/node = SubResource("AnimationNodeAnimation_wi0c6")
 nodes/Animation/position = Vector2(500, 100)
 node_connections = [&"output", 0, &"Animation"]
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_l6ohk"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_hp6x6"]
 animation = &"Walk"
@@ -332,11 +351,13 @@ states/Idle/node = SubResource("AnimationNodeBlendTree_5ncpa")
 states/Idle/position = Vector2(441, 114)
 states/Jump/node = SubResource("AnimationNodeBlendTree_wi0c6")
 states/Jump/position = Vector2(689, 114)
+states/Landing/node = SubResource("AnimationNodeBlendTree_l6ohk")
+states/Landing/position = Vector2(889, 323)
 states/Start/position = Vector2(191, 114)
 states/Walk/node = SubResource("AnimationNodeBlendTree_hp6x6")
 states/Walk/position = Vector2(406, 297)
 transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_wi0c6"), "Idle", "Jump", SubResource("AnimationNodeStateMachineTransition_3tkgg"), "Jump", "Idle", SubResource("AnimationNodeStateMachineTransition_l6ohk"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_oudfo"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_d6rpx"), "Walk", "Jump", SubResource("AnimationNodeStateMachineTransition_r3kul"), "Jump", "Walk", SubResource("AnimationNodeStateMachineTransition_jatw7"), "Jump", "Fall", SubResource("AnimationNodeStateMachineTransition_rv870"), "Fall", "Jump", SubResource("AnimationNodeStateMachineTransition_efikj"), "Walk", "Fall", SubResource("AnimationNodeStateMachineTransition_itxgx"), "Fall", "Walk", SubResource("AnimationNodeStateMachineTransition_cgsek"), "Fall", "Idle", SubResource("AnimationNodeStateMachineTransition_0pi4m"), "Idle", "Fall", SubResource("AnimationNodeStateMachineTransition_sg6sq")]
-graph_offset = Vector2(-405, 53)
+graph_offset = Vector2(-320, 83)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q26ax"]
 size = Vector2(82, 29)
@@ -673,10 +694,8 @@ transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition
 graph_offset = Vector2(-249, -5)
 
 [node name="CharacterBody2D" type="CharacterBody2D" unique_id=1522819235]
+collision_layer = 2
 script = ExtResource("1_dtqjt")
-movespeed = null
-jumpspeed = null
-attack_queued = null
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1628695635]
 z_index = 1
@@ -719,3 +738,8 @@ tree_root = SubResource("AnimationNodeStateMachine_ravlb")
 anim_player = NodePath("../AnimationPlayer")
 parameters/conditions/attacking = false
 parameters/Swing1/TimeScale/scale = 0.5
+
+[node name="LandingTimer" type="Timer" parent="." unique_id=1130764423]
+one_shot = true
+
+[connection signal="timeout" from="LandingTimer" to="." method="_on_landing_timer_timeout"]

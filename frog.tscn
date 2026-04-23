@@ -21,9 +21,13 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_whe2r"]
 size = Vector2(44, 32)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6ekd3"]
+size = Vector2(39, 21)
+
 [node name="Frog" type="Node2D" unique_id=1082994909]
 
 [node name="RigidBody2D" type="CharacterBody2D" parent="." unique_id=1542352178]
+collision_layer = 4
 script = ExtResource("1_6ekd3")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="RigidBody2D" unique_id=620322867]
@@ -34,6 +38,14 @@ sprite_frames = SubResource("SpriteFrames_slgur")
 shape = SubResource("RectangleShape2D_whe2r")
 
 [node name="JumpTimer" type="Timer" parent="RigidBody2D" unique_id=2141195796]
+wait_time = 2.0
 autostart = true
 
-[connection signal="timeout" from="RigidBody2D/JumpTimer" to="." method="_on_jump_timer_timeout"]
+[node name="Hitbox" type="Area2D" parent="RigidBody2D" unique_id=1627781012]
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D/Hitbox" unique_id=590111311]
+shape = SubResource("RectangleShape2D_6ekd3")
+
+[connection signal="timeout" from="RigidBody2D/JumpTimer" to="RigidBody2D" method="_on_jump_timer_timeout"]
+[connection signal="body_entered" from="RigidBody2D/Hitbox" to="RigidBody2D" method="_on_hitbox_body_entered"]
