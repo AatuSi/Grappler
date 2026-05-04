@@ -1,40 +1,273 @@
 [gd_scene format=3 uid="uid://bjl4ty66lknx6"]
 
 [ext_resource type="Script" uid="uid://ejqxgxfm3bws" path="res://frog.gd" id="1_6ekd3"]
-[ext_resource type="Texture2D" uid="uid://cgvnikvxbna14" path="res://Resources/lookuphappy.jpg" id="1_whe2r"]
+[ext_resource type="Texture2D" uid="uid://4qijurk36d2l" path="res://Resources/FrogIdle.png" id="2_6ekd3"]
+[ext_resource type="Texture2D" uid="uid://bq0ul6qe0pi5c" path="res://Resources/EnemyDeath.png" id="2_byod8"]
+[ext_resource type="Texture2D" uid="uid://f0hda3y7oi5h" path="res://Resources/FrogJump.png" id="3_slgur"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_6ekd3"]
-atlas = ExtResource("1_whe2r")
-region = Rect2(0, 0, 438, 325)
+[sub_resource type="AtlasTexture" id="AtlasTexture_j38ec"]
+atlas = ExtResource("2_byod8")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5cyyp"]
+atlas = ExtResource("2_byod8")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rd326"]
+atlas = ExtResource("2_byod8")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cvt0w"]
+atlas = ExtResource("2_byod8")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_slgur"]
+atlas = ExtResource("2_6ekd3")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_byod8"]
+atlas = ExtResource("3_slgur")
+region = Rect2(0, 0, 32, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_slgur"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_6ekd3")
+"texture": SubResource("AtlasTexture_j38ec")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5cyyp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rd326")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cvt0w")
+}, {
+"duration": 1.0,
+"texture": null
 }],
 "loop": true,
-"name": &"default",
+"name": &"Death",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_slgur")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_byod8")
+}],
+"loop": true,
+"name": &"Jump",
 "speed": 5.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_whe2r"]
-size = Vector2(44, 32)
+size = Vector2(28, 19)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6ekd3"]
-size = Vector2(39, 21)
+size = Vector2(28, 13.5)
+
+[sub_resource type="Animation" id="Animation_40hiu"]
+resource_name = "Death"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"Death"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimatedSprite2D:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.125, 0.25, 0.375, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.5),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"move_to_respawn_pos"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_j38ec"]
+resource_name = "Idle"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"Idle"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimatedSprite2D:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_5cyyp"]
+resource_name = "Jump"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"Jump"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimatedSprite2D:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_omj1a"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [2]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_rd326"]
+_data = {
+&"Death": SubResource("Animation_40hiu"),
+&"Idle": SubResource("Animation_j38ec"),
+&"Jump": SubResource("Animation_5cyyp"),
+&"RESET": SubResource("Animation_omj1a")
+}
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_8kk5g"]
+animation = &"Death"
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_aumaf"]
+graph_offset = Vector2(-284, 24)
+nodes/output/position = Vector2(540, 120)
+nodes/Animation/node = SubResource("AnimationNodeAnimation_8kk5g")
+nodes/Animation/position = Vector2(300, 100)
+node_connections = [&"output", 0, &"Animation"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_cvt0w"]
+animation = &"Idle"
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_40hiu"]
+nodes/output/position = Vector2(940, 100)
+nodes/Animation/node = SubResource("AnimationNodeAnimation_cvt0w")
+nodes/Animation/position = Vector2(685, 121)
+node_connections = [&"output", 0, &"Animation"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_omj1a"]
+animation = &"Jump"
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_8kk5g"]
+nodes/output/position = Vector2(760, 120)
+nodes/Animation/node = SubResource("AnimationNodeAnimation_omj1a")
+nodes/Animation/position = Vector2(500, 100)
+node_connections = [&"output", 0, &"Animation"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_aumaf"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_o353j"]
+advance_mode = 2
+advance_condition = &"is_jumping"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_yakrr"]
+advance_mode = 2
+advance_condition = &"is_idle"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_71pkg"]
+advance_mode = 2
+advance_condition = &"is_dead"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ia14r"]
+advance_mode = 2
+advance_condition = &"is_dead"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_5j707"]
+advance_mode = 2
+advance_condition = &"is_idle"
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_71pkg"]
+states/Death/node = SubResource("AnimationNodeBlendTree_aumaf")
+states/Death/position = Vector2(514, 249)
+states/Idle/node = SubResource("AnimationNodeBlendTree_40hiu")
+states/Idle/position = Vector2(407, 100)
+states/Jump/node = SubResource("AnimationNodeBlendTree_8kk5g")
+states/Jump/position = Vector2(588, 100)
+transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_aumaf"), "Idle", "Jump", SubResource("AnimationNodeStateMachineTransition_o353j"), "Jump", "Idle", SubResource("AnimationNodeStateMachineTransition_yakrr"), "Jump", "Death", SubResource("AnimationNodeStateMachineTransition_71pkg"), "Idle", "Death", SubResource("AnimationNodeStateMachineTransition_ia14r"), "Death", "Idle", SubResource("AnimationNodeStateMachineTransition_5j707")]
+graph_offset = Vector2(-340, 26)
 
 [node name="Frog" type="Node2D" unique_id=1082994909]
 
 [node name="RigidBody2D" type="CharacterBody2D" parent="." unique_id=1542352178]
+z_index = -1
 collision_layer = 4
 script = ExtResource("1_6ekd3")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="RigidBody2D" unique_id=620322867]
-scale = Vector2(0.1, 0.1)
 sprite_frames = SubResource("SpriteFrames_slgur")
+animation = &"Idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D" unique_id=297947640]
+position = Vector2(1, 6.5)
 shape = SubResource("RectangleShape2D_whe2r")
 
 [node name="JumpTimer" type="Timer" parent="RigidBody2D" unique_id=2141195796]
@@ -45,7 +278,19 @@ autostart = true
 collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D/Hitbox" unique_id=590111311]
+position = Vector2(1, 3.75)
 shape = SubResource("RectangleShape2D_6ekd3")
 
+[node name="AnimationPlayer" type="AnimationPlayer" parent="RigidBody2D" unique_id=454602389]
+libraries/ = SubResource("AnimationLibrary_rd326")
+
+[node name="AnimationTree" type="AnimationTree" parent="RigidBody2D" unique_id=616280060]
+tree_root = SubResource("AnimationNodeStateMachine_71pkg")
+anim_player = NodePath("../AnimationPlayer")
+parameters/conditions/is_dead = false
+parameters/conditions/is_idle = false
+parameters/conditions/is_jumping = false
+
 [connection signal="timeout" from="RigidBody2D/JumpTimer" to="RigidBody2D" method="_on_jump_timer_timeout"]
+[connection signal="area_entered" from="RigidBody2D/Hitbox" to="RigidBody2D" method="_on_hitbox_area_entered"]
 [connection signal="body_entered" from="RigidBody2D/Hitbox" to="RigidBody2D" method="_on_hitbox_body_entered"]

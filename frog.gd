@@ -4,43 +4,74 @@ extends CharacterBody2D
 @export var horizontal_speed = 200.0
 @export var damage = 150
 @export var jump_damage = 250
+@export var jump_range = 300
+@export var fatal_fall_speed = 600.0
+@export var respawn_range_y = 300
+
+@onready var jump_timer = $JumpTimer
 
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 var player = null
+var sword = null
 var is_jumping = false
+var is_alive = true
+var respawn_pos
+var last_frame_velocity_y = 0.0
 
 func _ready():
 	player = Globals.player
+	sword = Globals.sword
+	$AnimationTree["parameters/conditions/is_dead"] = false
+	respawn_pos = global_position
+
+func _process(delta: float) -> void:
+	if player.global_position.y - global_position.y >= respawn_range_y:
+		respawn()
 
 func _physics_process(delta):
-	# 1. Apply Gravity
-	if not is_on_floor():
-		velocity.y += gravity * delta
-		is_jumping = true
-	else:
-		# Stop horizontal movement when landing
-		if velocity.y >= 0: 
-			velocity.x = 0
-		is_jumping = false
-
-	move_and_slide()
+	if is_alive:
+		# 1. Apply Gravity
+		if not is_on_floor():
+			velocity.y += gravity * delta
+			$AnimationTree["parameters/conditions/is_jumping"] = true
+			$AnimationTree["parameters/conditions/is_idle"] = false
+			is_jumping = true
+			last_frame_velocity_y = velocity.y
+		elif last_frame_velocity_y >= fatal_fall_speed:
+			last_frame_velocity_y = 0
+			death()
+		else:
+			# Stop horizontal movement when landing
+			if velocity.y >= 0: 
+				velocity.x = 0
+			$AnimationTree["parameters/conditions/is_jumping"] = false
+			$AnimationTree["parameters/conditions/is_idle"] = true
+			is_jumping = false
+		move_and_slide()
 
 func _on_jump_timer_timeout():
-	if is_on_floor() and player:
+	var distance = global_position.distance_to(player.global_position)
+	if is_on_floor() and player and is_alive and distance <= jump_range:
 		hop_toward_player()
 
 func hop_toward_player():
-	
 	# Calculate direction (Left or Right)
 	var direction = sign(player.global_position.x - global_position.x)
 	
 	# Flip the sprite to face the player
-	$AnimatedSprite2D.flip_h = direction < 0
+	$AnimatedSprite2D.flip_h = direction > 0
 	
 	# Apply the launch forces
 	velocity.y = jump_force
 	velocity.x = direction * horizontal_speed
+	
+	# --- ADD VARIANCE HERE ---
+	# Pick a random wait time between 1.0 and 3.5 seconds
+	jump_timer.wait_time = randf_range(1.0, 3.5)
+	
+	# Restart the timer with the new wait time
+	jump_timer.start()
 
 # Inside the Frog script or a shared Hitbox script
 func calculate_knockback_vector(player_pos: Vector2):
@@ -70,5 +101,27 @@ func calculate_knockback_vector(player_pos: Vector2):
 
 
 func _on_hitbox_body_entered(body: Node2D) -> void:
-	if body == player:
+	if body == player and is_alive:
 		player.update_active_force(calculate_knockback_vector(player.global_position))
+
+
+func _on_hitbox_area_entered(area: Area2D) -> void:
+	if area == sword and is_alive:
+		death()
+	
+func respawn():
+	$AnimationTree["parameters/conditions/is_dead"] = false
+	$AnimationTree["parameters/conditions/is_idle"] = true
+	is_alive = true
+	move_to_respawn_pos()
+	velocity.y = 0
+	velocity.x = 0
+
+func move_to_respawn_pos():
+	global_position = respawn_pos
+
+func death():
+	$AnimationTree["parameters/conditions/is_jumping"] = false
+	$AnimationTree["parameters/conditions/is_idle"] = false
+	$AnimationTree["parameters/conditions/is_dead"] = true
+	is_alive = false

@@ -1,11 +1,12 @@
 extends CharacterBody2D
 
 @export var movespeed = 150
-@export var jumpspeed = -400
+@export var jumpspeed = -450
 @export var attack_queued = false
 # @export var acceleration = 15
 # @export var deceleration = 150
 # @export var air_deceleration = 50
+@export var bounciness = 0.7
 
 @onready var player_animation_tree = $AnimationTree
 @onready var sword_animation_tree = $Sword/AnimationTree
@@ -20,6 +21,7 @@ var spin_velocity: float = 0.0
 
 func _ready() -> void:
 	Globals.player = self
+	Globals.sword = $Sword
 
 
 func _physics_process(delta: float) -> void:
@@ -36,6 +38,9 @@ func _physics_process(delta: float) -> void:
 			apply_simulated_physics(delta, active_force)
 			update_animation_parameters()
 	move_and_slide()
+	
+	if current_state == State.PHYSICS_SIM:
+		handle_bounce_logic()
 
 func handle_player_input(delta):
 	if not is_on_floor():
@@ -72,6 +77,7 @@ func update_active_force(force: Vector2):
 func apply_simulated_physics(delta: float, applied_force: Vector2):
 	# 1. Apply the Force (Acceleration)
 	# We multiply by delta so the speed increase is consistent regardless of framerate
+	
 	velocity += applied_force
 	
 	# 2. Apply Natural Gravity
@@ -100,6 +106,8 @@ func apply_simulated_physics(delta: float, applied_force: Vector2):
 	active_force = Vector2.ZERO
 	if is_on_floor() and applied_force == Vector2.ZERO and velocity.length() < 10 and $LandingTimer.is_stopped():
 		$LandingTimer.start()
+	elif not is_on_floor():
+		$LandingTimer.stop()
 
 func handle_attack_logic():
 	var playback = sword_animation_tree.get("parameters/playback")
@@ -170,28 +178,40 @@ func update_animation_parameters(direction = 0):
 			player.rotation_degrees = 180
 		
 	if current_state == State.PHYSICS_SIM:
-		player_animation_tree["parameters/conditions/is_idle"] = false
-		player_animation_tree["parameters/conditions/is_falling"] = true
-		player_animation_tree["parameters/conditions/is_jumping"] = false
-		player_animation_tree["parameters/conditions/is_walking"] = false
+		if not is_on_floor():
+			player_animation_tree["parameters/conditions/is_idle"] = false
+			player_animation_tree["parameters/conditions/is_falling"] = true
+			player_animation_tree["parameters/conditions/is_jumping"] = false
+			player_animation_tree["parameters/conditions/is_walking"] = false
+			player_animation_tree["parameters/conditions/is_landing"] = false
+		else:
+			player_animation_tree["parameters/conditions/is_idle"] = false
+			player_animation_tree["parameters/conditions/is_falling"] = false
+			player_animation_tree["parameters/conditions/is_jumping"] = false
+			player_animation_tree["parameters/conditions/is_walking"] = false
+			player_animation_tree["parameters/conditions/is_landing"] = true
+			$AnimatedSprite2D.rotation = 0
 	elif (velocity == Vector2.ZERO):
 		# Idle
 		player_animation_tree["parameters/conditions/is_idle"] = true
 		player_animation_tree["parameters/conditions/is_falling"] = false
 		player_animation_tree["parameters/conditions/is_jumping"] = false
 		player_animation_tree["parameters/conditions/is_walking"] = false
+		player_animation_tree["parameters/conditions/is_landing"] = false
 	elif (is_on_floor()):
 		# Walking
 		player_animation_tree["parameters/conditions/is_idle"] = false
 		player_animation_tree["parameters/conditions/is_falling"] = false
 		player_animation_tree["parameters/conditions/is_jumping"] = false
 		player_animation_tree["parameters/conditions/is_walking"] = true
+		player_animation_tree["parameters/conditions/is_landing"] = false
 	else:
 		# Jumping
 		player_animation_tree["parameters/conditions/is_idle"] = false
 		player_animation_tree["parameters/conditions/is_falling"] = false
 		player_animation_tree["parameters/conditions/is_jumping"] = true
 		player_animation_tree["parameters/conditions/is_walking"] = false
+		player_animation_tree["parameters/conditions/is_landing"] = false
 	
 
 
