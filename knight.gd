@@ -3,18 +3,18 @@ extends CharacterBody2D
 
 @export var horizontal_speed = 200.0
 @export var contact_damage = 400
-@export var sword_damage = 600
+@export var sword_damage = 800
 @export var respawn_range_y = 300
 @export var walk_speed = 75
 @export var attacking: bool = false
 @export var health_points = 3
+@export var is_alive = true
 
 
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 var player = null
 var sword = null
-var is_alive = true
 var respawn_pos
 var last_frame_velocity_y = 0.0
 var direction = -1 # 1 represents moving right, -1 represents moving left
@@ -23,10 +23,13 @@ var direction = -1 # 1 represents moving right, -1 represents moving left
 func _ready():
 	player = Globals.player
 	sword = Globals.sword
-	$AnimationTree["parameters/conditions/is_dead"] = false
-	$AnimationTree["parameters/conditions/is_walking"] = false
-	$AnimationTree["parameters/conditions/is_idle"] = true
-	$AnimationTree["parameters/conditions/is_attacking"] = false
+	if not is_alive:
+		death()
+	else:
+		$AnimationTree["parameters/conditions/is_dead"] = false
+		$AnimationTree["parameters/conditions/is_walking"] = false
+		$AnimationTree["parameters/conditions/is_idle"] = true
+		$AnimationTree["parameters/conditions/is_attacking"] = false
 	respawn_pos = global_position
 
 func _process(delta: float) -> void:
@@ -118,13 +121,13 @@ func _on_sword_hitbox_body_entered(body: Node2D) -> void:
 
 func _on_hitbox_area_entered(area: Area2D) -> void:
 	if area == sword and is_alive:
-		if health_points > 0:
-			if $DamageTimer.is_stopped():
-				health_points -= 1
+		if $DamageTimer.is_stopped():
+			health_points -= 1
+			if health_points > 0:
 				$SpritePivot/AnimatedSprite2D.modulate = Color.RED 
 				$DamageTimer.start()
-		else:
-			death()
+			else:
+				death()
 
 func _on_damage_timer_timeout() -> void:
 	$SpritePivot/AnimatedSprite2D.modulate = Color.WHITE
@@ -143,7 +146,9 @@ func respawn():
 func move_to_respawn_pos():
 	global_position = respawn_pos
 
-func death():
+func death(play_sound = true):
+	if play_sound:
+		$AudioStreamPlayer2D2.play()
 	$AnimationTree["parameters/conditions/is_walking"] = false
 	$AnimationTree["parameters/conditions/is_idle"] = false
 	$AnimationTree["parameters/conditions/is_dead"] = true

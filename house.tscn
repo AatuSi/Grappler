@@ -1,0 +1,132 @@
+[gd_scene format=3 uid="uid://swtobcx1gjbi"]
+
+[ext_resource type="Script" uid="uid://kh3ajnu8y2ia" path="res://house.gd" id="1_6syyc"]
+[ext_resource type="Texture2D" uid="uid://dyvs4heac2w01" path="res://Resources/HouseClosed.png" id="1_metfq"]
+[ext_resource type="Texture2D" uid="uid://fbkqcrbrdp2u" path="res://Resources/HouseOpen.png" id="2_6syyc"]
+[ext_resource type="AudioStream" uid="uid://b7y18letsf0jd" path="res://Resources/sound/403355__corpocracy__door_slam01.mp3" id="4_o1325"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o1325"]
+atlas = ExtResource("1_metfq")
+region = Rect2(0, 0, 960, 944)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vy7fe"]
+atlas = ExtResource("2_6syyc")
+region = Rect2(0, 0, 960, 944)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_10qhy"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o1325")
+}],
+"loop": true,
+"name": &"Closed",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vy7fe")
+}],
+"loop": true,
+"name": &"Open",
+"speed": 5.0
+}]
+
+[sub_resource type="Animation" id="Animation_2y50f"]
+resource_name = "Closed"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"Closed"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimatedSprite2D:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/2/type = "audio"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AudioStreamPlayer2D")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.185,
+"stream": ExtResource("4_o1325")
+}],
+"times": PackedFloat32Array(0)
+}
+tracks/2/use_blend = true
+
+[sub_resource type="Animation" id="Animation_obbqb"]
+resource_name = "Open"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"Open"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimatedSprite2D:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_kjvky"]
+_data = {
+&"Closed": SubResource("Animation_2y50f"),
+&"Open": SubResource("Animation_obbqb")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_metfq"]
+size = Vector2(31, 48)
+
+[node name="House" type="Node2D" unique_id=1631794376]
+script = ExtResource("1_6syyc")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1916348364]
+sprite_frames = SubResource("SpriteFrames_10qhy")
+animation = &"Closed"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1750448736]
+libraries/ = SubResource("AnimationLibrary_kjvky")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=251514109]
+collision_mask = 7
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1860649921]
+position = Vector2(3.5, 448)
+shape = SubResource("RectangleShape2D_metfq")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=973051419]
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

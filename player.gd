@@ -6,7 +6,7 @@ extends CharacterBody2D
 # @export var acceleration = 15
 # @export var deceleration = 150
 # @export var air_deceleration = 50
-@export var bounciness = 0.7
+@export var bounciness = 0.6
 
 @onready var player_animation_tree = $AnimationTree
 @onready var sword_animation_tree = $Sword/AnimationTree
@@ -14,7 +14,7 @@ extends CharacterBody2D
 
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
-enum State { NORMAL, PHYSICS_SIM }
+enum State { NORMAL, PHYSICS_SIM, ENDING }
 var current_state = State.NORMAL
 var active_force: Vector2 = Vector2.ZERO
 var spin_velocity: float = 0.0
@@ -22,6 +22,7 @@ var spin_velocity: float = 0.0
 func _ready() -> void:
 	Globals.player = self
 	Globals.sword = $Sword
+	#DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 
 
 func _physics_process(delta: float) -> void:
@@ -37,10 +38,24 @@ func _physics_process(delta: float) -> void:
 		State.PHYSICS_SIM:
 			apply_simulated_physics(delta, active_force)
 			update_animation_parameters()
+		State.ENDING:
+			return
+	
+	# 1. Store the velocity right before the collision calculations happen
+	var pre_collision_velocity = velocity
+	
+	# 2. Execute movement
 	move_and_slide()
 	
-	if current_state == State.PHYSICS_SIM:
-		handle_bounce_logic()
+	# 3. Handle the bounce if we are in the sim state and hit a wall
+	if current_state == State.PHYSICS_SIM and is_on_wall():
+		var wall_normal = get_wall_normal()
+		
+		# Calculate the new bounced trajectory and apply the bounciness friction
+		velocity = pre_collision_velocity.bounce(wall_normal) * bounciness
+		
+		# Optional tweak: reverse the spin direction so it looks like a natural physical impact
+		spin_velocity *= -1
 
 func handle_player_input(delta):
 	if not is_on_floor():
@@ -125,6 +140,13 @@ func reset_combo_flag():
 	attack_queued = false
 	sword_animation_tree.set("parameters/conditions/attacking", false)
 
+func close_game():
+	get_tree().quit()
+	
+func fade_to_black():
+	current_state = State.ENDING
+	$FadeLayer/AnimationPlayer.play("fade_to_black")
+
 func update_animation_parameters(direction = 0):
 	var player = $CollisionShape2D
 	var player_sprite = $AnimatedSprite2D
@@ -178,6 +200,7 @@ func update_animation_parameters(direction = 0):
 			player.rotation_degrees = 180
 		
 	if current_state == State.PHYSICS_SIM:
+		
 		if not is_on_floor():
 			player_animation_tree["parameters/conditions/is_idle"] = false
 			player_animation_tree["parameters/conditions/is_falling"] = true

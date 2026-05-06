@@ -1,0 +1,187 @@
+[gd_scene format=3 uid="uid://4kk0jk75ulcy"]
+
+[ext_resource type="Script" uid="uid://bllr7gyaewfxy" path="res://archer.gd" id="1_xnqie"]
+[ext_resource type="Texture2D" uid="uid://bq0ul6qe0pi5c" path="res://Resources/EnemyDeath.png" id="2_7oyl4"]
+[ext_resource type="Texture2D" uid="uid://dtc6sdsrinsjb" path="res://Resources/Archer.png" id="3_uefdl"]
+[ext_resource type="Texture2D" uid="uid://bs6wbaenhcbke" path="res://Resources/ArcherBow.png" id="4_pvqt4"]
+[ext_resource type="AudioStream" uid="uid://bv35m1wqcxid2" path="res://Resources/sound/263675__porkmuncher__bow_release.mp3" id="5_7oyl4"]
+[ext_resource type="AudioStream" uid="uid://cq1g1pj46j1d8" path="res://Resources/sound/851852__etheraudio__crusty-chiptune-clap.wav" id="6_uefdl"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8dvbt"]
+atlas = ExtResource("2_7oyl4")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_emell"]
+atlas = ExtResource("2_7oyl4")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pkudf"]
+atlas = ExtResource("2_7oyl4")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8vwcj"]
+atlas = ExtResource("2_7oyl4")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vrsqd"]
+atlas = ExtResource("3_uefdl")
+region = Rect2(0, 0, 32, 48)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_v224t"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8dvbt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_emell")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pkudf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8vwcj")
+}, {
+"duration": 1.0,
+"texture": null
+}],
+"loop": true,
+"name": &"Death",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vrsqd")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xvdlj"]
+size = Vector2(20, 47.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_48yvl"]
+size = Vector2(20, 47.5)
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_n8u4y"]
+diffuse_texture = ExtResource("4_pvqt4")
+
+[sub_resource type="Animation" id="Animation_y67i6"]
+resource_name = "Death"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BodySprite:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"Death"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BodySprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.125, 0.25, 0.375, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4]
+}
+
+[sub_resource type="Animation" id="Animation_wrg2f"]
+resource_name = "Idle"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BodySprite:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"Idle"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BodySprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_ixa7x"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BodySprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_74ll8"]
+_data = {
+&"Death": SubResource("Animation_y67i6"),
+&"Idle": SubResource("Animation_wrg2f"),
+&"RESET": SubResource("Animation_ixa7x")
+}
+
+[node name="Archer" type="CharacterBody2D" unique_id=718287365]
+z_index = -1
+collision_layer = 4
+script = ExtResource("1_xnqie")
+
+[node name="BodySprite" type="AnimatedSprite2D" parent="." unique_id=22765758]
+sprite_frames = SubResource("SpriteFrames_v224t")
+animation = &"Idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1159284751]
+position = Vector2(0, 0.25)
+shape = SubResource("RectangleShape2D_xvdlj")
+
+[node name="Hitbox" type="Area2D" parent="." unique_id=1255844022]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=82998744]
+position = Vector2(0, 0.25)
+shape = SubResource("RectangleShape2D_48yvl")
+
+[node name="Bow" type="Node2D" parent="." unique_id=1225404207]
+
+[node name="Sprite2D" type="Sprite2D" parent="Bow" unique_id=1224934265]
+position = Vector2(9, 0)
+texture = SubResource("CanvasTexture_n8u4y")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1627701291]
+libraries/ = SubResource("AnimationLibrary_74ll8")
+
+[node name="Timer" type="Timer" parent="." unique_id=735166148]
+wait_time = 2.0
+one_shot = true
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=1659877213]
+stream = ExtResource("5_7oyl4")
+
+[node name="AudioStreamPlayer2D2" type="AudioStreamPlayer2D" parent="." unique_id=1621910302]
+stream = ExtResource("6_uefdl")
+volume_db = -5.0
+
+[connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

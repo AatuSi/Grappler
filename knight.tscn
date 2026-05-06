@@ -2,9 +2,11 @@
 
 [ext_resource type="Script" uid="uid://ddqvk1co53tp1" path="res://knight.gd" id="1_go3up"]
 [ext_resource type="Texture2D" uid="uid://cjc4xhkqk1rqq" path="res://Resources/KnightAttack.png" id="2_gadha"]
+[ext_resource type="AudioStream" uid="uid://hljmrlc7gh1h" path="res://Resources/sound/Bluezone_BC0297_stone_impact_steel_bar_01_010.wav" id="2_o118k"]
 [ext_resource type="Texture2D" uid="uid://dej1qosiflrcn" path="res://Resources/KnightDeath.png" id="3_o118k"]
 [ext_resource type="Texture2D" uid="uid://d14kqc8ta8gnh" path="res://Resources/KnightIdle.png" id="4_hnm0a"]
 [ext_resource type="Texture2D" uid="uid://bk7q2hyhqg7bv" path="res://Resources/KnightWalk.png" id="5_k3kcr"]
+[ext_resource type="AudioStream" uid="uid://cq1g1pj46j1d8" path="res://Resources/sound/851852__etheraudio__crusty-chiptune-clap.wav" id="7_o118k"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_whe2r"]
 size = Vector2(51, 85)
@@ -87,6 +89,21 @@ tracks/5/keys = {
 "update": 1,
 "values": [true, false]
 }
+tracks/6/type = "audio"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("AudioStreamPlayer2D")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("2_o118k")
+}],
+"times": PackedFloat32Array(0.4)
+}
+tracks/6/use_blend = true
 
 [sub_resource type="Animation" id="Animation_40hiu"]
 resource_name = "Death"
@@ -550,6 +567,12 @@ disabled = true
 [node name="DamageTimer" type="Timer" parent="." unique_id=1159402357]
 wait_time = 0.5
 one_shot = true
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=1124138860]
+
+[node name="AudioStreamPlayer2D2" type="AudioStreamPlayer2D" parent="." unique_id=766243672]
+stream = ExtResource("7_o118k")
+volume_db = -5.0
 
 [connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]
 [connection signal="body_entered" from="Hitbox" to="." method="_on_hitbox_body_entered"]
