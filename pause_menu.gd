@@ -24,3 +24,14 @@ func _on_save_pressed() -> void:
 
 func _on_quit_pressed() -> void:
 	get_tree().quit()
+
+
+
+
+
+func _on_controls_mouse_entered() -> void:
+	$GridContainer3.visible = true
+
+
+func _on_controls_mouse_exited() -> void:
+	$GridContainer3.visible = false

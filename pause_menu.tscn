@@ -130,10 +130,64 @@ border_color = Color(0.23529412, 0.23529412, 0.23529412, 1)
 shadow_offset = Vector2(-4, -4)
 anti_aliasing = false
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ub45p"]
+content_margin_bottom = 5.0
+bg_color = Color(0.23392546, 0.23392549, 0.23392531, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.8745098, 0.8745098, 0.8745098, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+shadow_size = 2
+shadow_offset = Vector2(2, 2)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1meuf"]
+content_margin_bottom = 5.0
+bg_color = Color(0.8745098, 0.8745098, 0.8745098, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.23529412, 0.23529412, 0.23529412, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+shadow_size = 4
+shadow_offset = Vector2(4, 4)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_42xcf"]
+content_margin_bottom = 5.0
+bg_color = Color(0.8745098, 0.8745098, 0.8745098, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.23529412, 0.23529412, 0.23529412, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+shadow_size = 4
+shadow_offset = Vector2(4, 4)
+anti_aliasing = false
+
 [sub_resource type="LabelSettings" id="LabelSettings_p81d2"]
 line_spacing = 0.0
 font = ExtResource("2_05uyy")
 font_size = 64
+shadow_size = 15
+shadow_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_nwcfo"]
+font = ExtResource("2_05uyy")
+font_size = 48
 shadow_size = 15
 shadow_color = Color(0, 0, 0, 1)
 
@@ -210,6 +264,21 @@ theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_lv42l")
 text = "Quit
 "
 
+[node name="ControlsButton" type="Button" parent="GridContainer" unique_id=404658756]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(0.23529412, 0.23529412, 0.23529412, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.23529412, 0.23529412, 0.23529412, 1)
+theme_override_fonts/font = ExtResource("2_05uyy")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_ub45p")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_1meuf")
+theme_override_styles/hover = SubResource("StyleBoxFlat_42xcf")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_p81d2")
+text = "?
+
+"
+
 [node name="GridContainer2" type="GridContainer" parent="." unique_id=92224261]
 layout_mode = 1
 anchors_preset = 6
@@ -235,6 +304,31 @@ E
 R"
 label_settings = SubResource("LabelSettings_p81d2")
 
+[node name="GridContainer3" type="GridContainer" parent="." unique_id=1605609343]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ControlsLabel" type="Label" parent="GridContainer3" unique_id=1167144532]
+layout_mode = 2
+text = "← → = Walk
+Z = Jump
+X = Attack
+ESC = Pause"
+label_settings = SubResource("LabelSettings_nwcfo")
+
 [connection signal="pressed" from="GridContainer/Resume" to="." method="_on_resume_pressed"]
 [connection signal="pressed" from="GridContainer/Save" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="GridContainer/Quit" to="." method="_on_quit_pressed"]
+[connection signal="mouse_entered" from="GridContainer/ControlsButton" to="." method="_on_controls_mouse_entered"]
+[connection signal="mouse_exited" from="GridContainer/ControlsButton" to="." method="_on_controls_mouse_exited"]

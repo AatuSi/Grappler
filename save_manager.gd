@@ -17,6 +17,7 @@ func save_game():
 
 func load_game():
 	if not FileAccess.file_exists(SAVE_PATH):
+		Globals.first_time = true
 		return # No save file yet, start fresh
 
 	var file = FileAccess.open(SAVE_PATH, FileAccess.READ)
